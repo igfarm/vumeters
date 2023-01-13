@@ -4,7 +4,7 @@ A fun little project to show some VU Meters for CamillaDSP.
 
 In my setup I have a Motu M4 which stereo in the first two channels and the sub on the third channel. I use the handy websocket reports from CamillaDSP to refresh the meters.
 
-![enter image description here](some%20url)
+![VU Meters](./snapshot.png)
 
 ##  Instructions
 
