@@ -57,6 +57,11 @@
     let volume = 0;
     let state = "Starting";
     let volumeSet = false;
+    
+    const setDisplay = function (state) {
+        console.log("set display " + state);
+        document.getElementById("dimScreen").style.display = state ? "none" : "block";
+    }
         
     const start = function () {
         console.log("Starting socket");
@@ -110,6 +115,8 @@
     // every second
     // request a status check
     let t1 = setInterval(function  () {
+        setDisplay(state == "Running");
+        
         if (socket.readyState !== WebSocket.OPEN) {
             return;
         }
