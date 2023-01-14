@@ -55,11 +55,11 @@
     // Main
     let socket = null;
     let volume = 0;
-    let state = "Starting";
+    let state = "Unkown";
     let volumeSet = false;
+    let minVolume = -60;
     
     const setDisplay = function (state) {
-        console.log("set display " + state);
         document.getElementById("dimScreen").style.display = state ? "none" : "block";
     }
         
@@ -85,6 +85,8 @@
             }
             else if (data["GetVolume"]) {
                 volume = data["GetVolume"].value;
+                if (volume < minVolume)
+                    volume = minVolume;
                 document.getElementById("volumeLevel").innerHTML = volume + "dB";
                 if (!volumeSet) {
                     document.getElementById("volumeControl").value = volume;
@@ -118,6 +120,7 @@
         setDisplay(state == "Running");
         
         if (socket.readyState !== WebSocket.OPEN) {
+            state = "Unknown"
             return;
         }
 
@@ -129,6 +132,7 @@
     // restart connection if lost
     let t2 = setInterval(function  () {
         if (socket.readyState !== WebSocket.OPEN) {
+            state = "Unknown"
             start();
         }
     }, 5000)
@@ -141,9 +145,10 @@
     // Install volume control
     const volumeControl = document.getElementById('volumeControl')
     volumeControl.addEventListener('change', function () {
-        let newVolume = volumeControl.value;
-        console.log("new volume should be " + newVolume)
-        socket.send(JSON.stringify({"SetVolume": parseInt(newVolume)}));
+        let newVolume = parseInt(volumeControl.value);
+        if (newVolume == minVolume)
+            newVolume = minVolume * 2;
+        socket.send(JSON.stringify({"SetVolume": newVolume}));
         volumeSet = false;
         socket.send(JSON.stringify("GetVolume"));
     }, false);
