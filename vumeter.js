@@ -56,6 +56,7 @@
     let socket = null;
     let volume = 0;
     let state = "Starting";
+    let volumeSet = false;
         
     const start = function () {
         console.log("Starting socket");
@@ -79,6 +80,11 @@
             }
             else if (data["GetVolume"]) {
                 volume = data["GetVolume"].value;
+                document.getElementById("volumeLevel").innerHTML = volume + "dB";
+                if (!volumeSet) {
+                    document.getElementById("volumeControl").value = volume;
+                    volumeSet = true;
+                }
             }
             else if (data["GetState"]) {
                 state = data["GetState"].value;
@@ -120,9 +126,19 @@
         }
     }, 5000)
     
-    
+    // Show new logo
     if (logoMsg) {
         document.getElementById("Logo").innerHTML = logoMsg;
     }
+    
+    // Install volume control
+    const volumeControl = document.getElementById('volumeControl')
+    volumeControl.addEventListener('change', function () {
+        let newVolume = volumeControl.value;
+        console.log("new volume should be " + newVolume)
+        socket.send(JSON.stringify({"SetVolume": parseInt(newVolume)}));
+        volumeSet = false;
+        socket.send(JSON.stringify("GetVolume"));
+    }, false);
 
 }());
