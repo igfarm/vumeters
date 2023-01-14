@@ -37,6 +37,21 @@
         needle.style.transform="rotate("+rotation+"deg)";
     }
 
+    const getUrlParameter = function(sParam) {
+        const sPageURL = window.location.search.substring(1);
+        const sURLVariables = sPageURL.split('&');
+
+        for (let i = 0; i < sURLVariables.length; i++) {
+            const sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    }
+    
+    // Main
     let socket = null;
     let volume = 0;
     let state = "Starting";
@@ -103,5 +118,12 @@
             start();
         }
     }, 5000)
+    
+    
+    const msg = getUrlParameter("msg");
+    if (msg) {
+        console.log(document.getElementById("Logo"))
+        document.getElementById("Logo").innerHTML = msg;
+    }
 
 }());
