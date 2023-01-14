@@ -120,10 +120,8 @@
     }, 5000)
     
     
-    const msg = getUrlParameter("msg");
-    if (msg) {
-        console.log(document.getElementById("Logo"))
-        document.getElementById("Logo").innerHTML = msg;
+    if (logoMsg) {
+        document.getElementById("Logo").innerHTML = logoMsg;
     }
 
 }());
