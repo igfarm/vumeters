@@ -11,7 +11,7 @@ is the subwoofer. Connection to CamillaDSP is via websocket.
 
 1. Copy files to your computer.
 2.  Update the `config.js` file to set the url for camillaDSP websocket.
-3.  Load the `vumeter.html` page in your browser..
+3.  Load the `index.html` page in your browser..
  
 ## Sources
 
