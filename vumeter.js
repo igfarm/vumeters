@@ -2,9 +2,8 @@
 	'use strict';
     const $this=this;
     
-    const playbackMetric = "GetPlaybackSignalRms";
-
-
+    const getPlaybackMetric = "GetPlaybackSignalRms";
+    
     const levelAsPercent = function(dBFS) {
         let value = 0;
         if (dBFS >= -12)
@@ -38,26 +37,71 @@
         needle.style.transform="rotate("+rotation+"deg)";
     }
 
-	let socket = new WebSocket(camillaUrl);
+    let socket = null;
+    let volume = 0;
+    let state = "Starting";
+        
+    const start = function () {
+        console.log("Starting socket");
+        socket = new WebSocket(camillaUrl);
+
+        // Connection opened
+        socket.addEventListener('open', (event) => {
+            socket.send(JSON.stringify("GetVersion"));
+            //socket.send(JSON.stringify({"SetUpdateInterval": 500}));
+        });
+
+       // Listen for messages
+        socket.addEventListener('message', (event) => {
+            //console.log('Message from server ', event.data);
+            const data = JSON.parse(event.data)
+
+            if (data[getPlaybackMetric]) {
+                checkVolume(data[getPlaybackMetric].value[0], "meterRight") 
+                checkVolume(data[getPlaybackMetric].value[1], "meterLeft") 
+                checkVolume(data[getPlaybackMetric].value[2], "meterSub") 
+            }
+            else if (data["GetVolume"]) {
+                volume = data["GetVolume"].value;
+            }
+            else if (data["GetState"]) {
+                state = data["GetState"].value;
+            }
+        });
+
+    }
     
-    // Connection opened
-    socket.addEventListener('open', (event) => {
-        socket.send(JSON.stringify("GetVersion"));
-        //socket.send(JSON.stringify({"SetUpdateInterval": 500}));
-
-        let t = setInterval(function  () {
-            socket.send(JSON.stringify(playbackMetric));
-        }, 100)
-    });
-
-   // Listen for messages
-    socket.addEventListener('message', (event) => {
-        //console.log('Message from server ', event.data);
-        const data = JSON.parse(event.data)
-        if (data[playbackMetric]) {
-            checkVolume(data[playbackMetric].value[0], "meterRight") 
-            checkVolume(data[playbackMetric].value[1], "meterLeft") 
-            checkVolume(data[playbackMetric].value[2], "meterSub") 
+    start();
+	
+    // every 100 msec
+    // request a playback metric 
+    let t0 = setInterval(function  () {
+        if (socket.readyState !== WebSocket.OPEN) {
+            return;
         }
-    });
+
+        if (state == 'Running') {
+            socket.send(JSON.stringify(getPlaybackMetric));
+        }
+    }, 100)
+
+    // every second
+    // request a status check
+    let t1 = setInterval(function  () {
+        if (socket.readyState !== WebSocket.OPEN) {
+            return;
+        }
+
+        socket.send(JSON.stringify("GetState"));
+        socket.send(JSON.stringify("GetVolume"));
+    }, 1000);
+
+    // every 5 seconds
+    // restart connection if lost
+    let t2 = setInterval(function  () {
+        if (socket.readyState !== WebSocket.OPEN) {
+            start();
+        }
+    }, 5000)
+
 }());
