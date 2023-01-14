@@ -2,7 +2,8 @@
 	'use strict';
     const $this=this;
     
-    const getPlaybackMetric = "GetPlaybackSignalRms";
+    // options are GetPlaybackSignalPeak and GetPlaybackSignalRms
+    const getPlaybackMetric = "GetPlaybackSignalPeak";
     
     const levelAsPercent = function(dBFS) {
         let value = 0;
