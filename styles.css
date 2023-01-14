@@ -130,8 +130,9 @@ h1 {
 }
 
 #meter-container {
-    width: 800px;
-    height: 480px;
+    border: 1px white;
+    width: 1024px;
+    height: 600px;
     padding: 0;
     margin: 0;
 
@@ -154,7 +155,8 @@ h1 {
 }
 
 #meterRight {
-    transform: scale(1.2);
+    margin-top: 80px;
+    transform: scale(1.5);
     grid-row-start: 1;
     grid-column-start: 1;
     grid-row-end: 2;
@@ -162,23 +164,25 @@ h1 {
 }
 
 #meterLeft {
-    transform: scale(1.2);
-   grid-row-start: 1;
-   grid-column-start: 2;
-   grid-row-end: 2;
-   grid-column-end: 3;
+    margin-top: 80px;
+    transform: scale(1.5);
+    grid-row-start: 1;
+    grid-column-start: 2;
+    grid-row-end: 2;
+    grid-column-end: 3;
 }
 
 #meterSub {
-    transform: scale(0.8);
-   grid-row-start: 2;
-   grid-column-start: 2;
+    margin-top: 60px;
+    transform: scale(1.2);
+    grid-row-start: 2;
+    grid-column-start: 2;
 }
 
 #LogoContainer {
     margin-left: auto;
     margin-right: auto;
-    width: 300px;
+    width: 400px;
     grid-row-start: 2;
     grid-column-start: 1;
 }
@@ -280,4 +284,13 @@ input[type=range]:focus::-ms-fill-upper {
 
 #volume {
 color: white;
+}
+
+.round_btn {
+  display:block;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 1px solid red;
+  
 }

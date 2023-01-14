@@ -1,2 +1,2 @@
 const camillaUrl = "ws://camilla.local:1234";
-const logoMsg = "M<sup>y</sup>Meter";
+const logoMsg = "M<sup>y</sup>System";
