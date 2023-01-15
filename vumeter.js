@@ -53,7 +53,7 @@
     
     // Main
     let socket = null;
-    let state = "Unkown";
+    let camillaState = "Unkown";
     let myVolume = -40;
     const MIN_VOLUME = -60;
     let displayState = undefined;
@@ -62,20 +62,36 @@
         "stream": false,
         "analog": false,
         "subwoofer": false
-    };
+    }
+
+    const setConfig = function (input, sub) {
+        let file = "/home/ubuntu/camilladsp/configs/"
+
+        if (input == "stream")
+            file += 'usb';
+        else
+            file += 'analog';
+
+        if (!sub)
+            file += '-nosub';
         
+        file += '.yml';
+
+        socket.send(JSON.stringify({"ReadConfigFile": file }));
+    }
+    
     const setDisplay = function (state) {
-        return;
-        
         if (state == displayState)
             return;
         displayState = state;
         document.getElementById("dimScreen").style.display = state ? "none" : "block";
+/*
         if (dspUrl) {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', dspUrl + '/?dsp-' + (state ? 'on' : 'off') + '=');
             xhr.send();
         }
+*/
     }
         
     const start = function () {
@@ -84,8 +100,11 @@
 
         // Connection opened
         socket.addEventListener('open', (event) => {
-            socket.send(JSON.stringify("GetVersion"));
-            //socket.send(JSON.stringify({"SetUpdateInterval": 500}));
+            setTimeout(function () {
+                socket.send(JSON.stringify("GetConfigJson"));
+                socket.send(JSON.stringify("GetState"));
+                socket.send(JSON.stringify("GetVolume"));
+            }, 500);
         });
 
        // Listen for messages
@@ -107,7 +126,34 @@
                 }
             }
             else if (data["GetState"]) {
-                state = data["GetState"].value;
+                camillaState = data["GetState"].value;
+            }
+            else if (data["ReadConfigFile"]) {
+                //console.log(data["ReadConfigFile"]);
+                const config = data["ReadConfigFile"].value;
+                socket.send(JSON.stringify({"SetConfig": config}));
+                
+                setTimeout(function () {
+                    socket.send(JSON.stringify("GetConfigJson"));
+                }, 500);
+                
+            }
+            else if (data["GetConfigJson"]) {
+                const config = JSON.parse(data["GetConfigJson"].value);
+
+                // sub enabled
+                buttonState['subwoofer'] = config.mixers.to3chan.mapping.length == 3;
+
+                // Source
+                if (config.devices.capture.device == "hw:M4") {
+                    buttonState['stream'] = false;
+                    buttonState['analog'] = true;
+                } else {
+                    buttonState['stream'] = true;
+                    buttonState['analog'] = false;
+                }
+
+                fixUiButtons()
             }
         });
 
@@ -119,10 +165,11 @@
     // request a playback metric 
     let t0 = setInterval(function  () {
         if (socket.readyState !== WebSocket.OPEN) {
+            camillaState = "Unknown"
             return;
         }
 
-        if (state == 'Running') {
+        if (camillaState == 'Running') {
             socket.send(JSON.stringify(getPlaybackMetric));
         }
     }, 100)
@@ -130,10 +177,10 @@
     // every second
     // request a status check
     let t1 = setInterval(function  () {
-        setDisplay(state == "Running");
+        setDisplay(camillaState == "Running");
         
         if (socket.readyState !== WebSocket.OPEN) {
-            state = "Unknown"
+            camillaState = "Unknown"
             return;
         }
 
@@ -145,9 +192,10 @@
     // restart connection if lost
     let t2 = setInterval(function  () {
         if (socket.readyState !== WebSocket.OPEN) {
-            state = "Unknown"
+            camillaState = "Unknown"
             start();
         }
+        socket.send(JSON.stringify("GetConfigJson"));
     }, 5000)
     
     // Show new logo
@@ -173,27 +221,17 @@
         }
     }
 
-    function btnListener(obj, func) {
-        obj.addEventListener("click", function (event) {
-            const id = obj.id
-            buttonState[id] = !buttonState[id];
-            if (func)
-                func();
-            fixUiButtons()
-        });
-    }
-
     // Control buttons
-    const stream = document.getElementById('stream');
-    btnListener(stream, function () {
-        buttonState['analog'] = !buttonState['stream'];
+    document.getElementById('stream').addEventListener("click", function () {
+        setConfig('stream', buttonState['subwoofer'])
     })
 
-    const analog = document.getElementById('analog');
-    btnListener(analog, function () {
-        buttonState['stream'] = !buttonState['analog'];
+    document.getElementById('analog').addEventListener("click", function () {
+        setConfig('analog', buttonState['subwoofer'])
     })
 
-    const subwoofer = document.getElementById('subwoofer');
-    btnListener(subwoofer)
+    document.getElementById('subwoofer').addEventListener("click", function () {
+        setConfig( buttonState['stream'] ? 'stream' : 'analog', !buttonState['subwoofer'])
+    })
+
 }());
