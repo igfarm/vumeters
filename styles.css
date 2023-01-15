@@ -154,6 +154,10 @@ h1 {
    height: 100%;
 }
 
+#meters {
+    width: 100%;
+}
+
 #meterRight {
     margin-top: 80px;
     transform: scale(1.5);
@@ -173,18 +177,15 @@ h1 {
 }
 
 #meterSub {
-    margin-top: 60px;
     transform: scale(1.2);
     grid-row-start: 2;
     grid-column-start: 2;
+    margin-top: 40px;
 }
 
 #LogoContainer {
-    margin-left: auto;
-    margin-right: auto;
-    width: 400px;
-    grid-row-start: 2;
-    grid-column-start: 1;
+    margin-left: 50px;
+    margin-right: 20px;
 }
 
 #Logo {
@@ -195,7 +196,6 @@ h1 {
     text-align: center;
     color: #22d224;
 }
-
 
 input[type=range] {
   -webkit-appearance: none;
@@ -288,16 +288,36 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 button.round {
-  background-color: #888;
+  background-color: #444;
   color: white;
   border: none;
   padding: 5px;
-  font-size: 31px;
-  height: 60px;
-  width: 60px;
+  font-size: 25px;
+  height: 70px;
+  width: 70px;
   border-radius: 50%;
 }
+button.round svg {
+    margin-top: 5px;
+    width: 40px;
+}
 
+button.round.active {
+  background-color: #0A699E;
+}
+
+#line2 {
+    width: 100%;
+    margin-top: 50px;
+}
+#buttons {
+    margin-top: 10px;
+    width: 100%;
+}
+#buttons td {
+    text-align: center;
+    padding-top: 10px;
+}
 #dimScreen {
     display: none;
     width: 100%;
