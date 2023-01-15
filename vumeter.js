@@ -81,6 +81,8 @@
     }
     
     const setDisplay = function (state) {
+        return false;
+        
         if (state == displayState)
             return;
         displayState = state;
