@@ -188,8 +188,8 @@ h1 {
 }
 
 #Logo {
-    margin-top: 5px;
-    margin-bottom: 25px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     font-family: McFont;
     font-size: 80px;
     text-align: center;
@@ -285,6 +285,17 @@ input[type=range]:focus::-ms-fill-upper {
 
 #volume {
     color: white;
+}
+
+button.round {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 5px;
+  font-size: 31px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
 }
 
 #dimScreen {

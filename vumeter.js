@@ -24,7 +24,6 @@
     }    
 
     const checkVolume = function(volume, meter){
-
         //min=20deg   max=160deg
         let rotation = 1.4 * levelAsPercent(volume) + 20;
         if (rotation < 20)
@@ -54,10 +53,9 @@
     
     // Main
     let socket = null;
-    let volume = 0;
     let state = "Unkown";
-    let volumeSet = false;
-    let minVolume = -60;
+    let myVolume = -40;
+    const MIN_VOLUME = -60;
     
     const setDisplay = function (state) {
         document.getElementById("dimScreen").style.display = state ? "none" : "block";
@@ -84,13 +82,11 @@
                 checkVolume(data[getPlaybackMetric].value[2], "meterSub") 
             }
             else if (data["GetVolume"]) {
-                volume = data["GetVolume"].value;
-                if (volume < minVolume)
-                    volume = minVolume;
-                document.getElementById("volumeLevel").innerHTML = volume + "dB";
-                if (!volumeSet) {
-                    document.getElementById("volumeControl").value = volume;
-                    volumeSet = true;
+                const newVolume = Math.max(data["GetVolume"].value, MIN_VOLUME);
+                document.getElementById("volumeLevel").innerHTML = newVolume + "dB";
+                if (newVolume != myVolume) {
+                    document.getElementById("volumeControl").value = newVolume;
+                    myVolume = newVolume;
                 }
             }
             else if (data["GetState"]) {
@@ -143,14 +139,12 @@
     }
     
     // Install volume control
-    const volumeControl = document.getElementById('volumeControl')
+    const volumeControl = document.getElementById('volumeControl');
     volumeControl.addEventListener('change', function () {
         let newVolume = parseInt(volumeControl.value);
-        if (newVolume == minVolume)
-            newVolume = minVolume * 2;
+        if (newVolume == MIN_VOLUME)
+            newVolume = MIN_VOLUME * 2;
         socket.send(JSON.stringify({"SetVolume": newVolume}));
-        volumeSet = false;
-        socket.send(JSON.stringify("GetVolume"));
     }, false);
 
 }());
