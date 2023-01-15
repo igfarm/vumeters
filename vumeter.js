@@ -56,9 +56,26 @@
     let state = "Unkown";
     let myVolume = -40;
     const MIN_VOLUME = -60;
-    
+    let displayState = undefined;
+
+    let buttonState = {
+        "stream": false,
+        "analog": false,
+        "subwoofer": false
+    };
+        
     const setDisplay = function (state) {
+        return;
+        
+        if (state == displayState)
+            return;
+        displayState = state;
         document.getElementById("dimScreen").style.display = state ? "none" : "block";
+        if (dspUrl) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', dspUrl + '/?dsp-' + (state ? 'on' : 'off') + '=');
+            xhr.send();
+        }
     }
         
     const start = function () {
@@ -147,4 +164,36 @@
         socket.send(JSON.stringify({"SetVolume": newVolume}));
     }, false);
 
+    function fixUiButtons() {
+        for (let btn of ['analog', 'stream', 'subwoofer']) {
+            if (buttonState[btn])
+                document.getElementById(btn).classList.add("active");
+            else
+                document.getElementById(btn).classList.remove("active");
+        }
+    }
+
+    function btnListener(obj, func) {
+        obj.addEventListener("click", function (event) {
+            const id = obj.id
+            buttonState[id] = !buttonState[id];
+            if (func)
+                func();
+            fixUiButtons()
+        });
+    }
+
+    // Control buttons
+    const stream = document.getElementById('stream');
+    btnListener(stream, function () {
+        buttonState['analog'] = !buttonState['stream'];
+    })
+
+    const analog = document.getElementById('analog');
+    btnListener(analog, function () {
+        buttonState['stream'] = !buttonState['analog'];
+    })
+
+    const subwoofer = document.getElementById('subwoofer');
+    btnListener(subwoofer)
 }());
