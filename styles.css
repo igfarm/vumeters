@@ -159,7 +159,6 @@ h1 {
 }
 
 #meterRight {
-    margin-top: 80px;
     transform: scale(1.5);
     grid-row-start: 1;
     grid-column-start: 1;
@@ -168,7 +167,6 @@ h1 {
 }
 
 #meterLeft {
-    margin-top: 80px;
     transform: scale(1.5);
     grid-row-start: 1;
     grid-column-start: 2;
@@ -195,6 +193,100 @@ h1 {
     font-size: 80px;
     text-align: center;
     color: #22d224;
+}
+
+#volume {
+    color: white;
+}
+
+button.round {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 5px;
+  font-size: 25px;
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+}
+button.round svg {
+    margin-top: 5px;
+    width: 40px;
+}
+
+button.round.active {
+  background-color: #0A699E;
+}
+
+#line2 {
+    width: 100%;
+    margin-top: 50px;
+}
+#buttons {
+    margin-top: 10px;
+    width: 100%;
+}
+#buttons td {
+    text-align: center;
+    padding-top: 10px;
+}
+#dimScreen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background:rgba(0,0,0,1); 
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Just to keep it at the very top */
+}
+
+#uiGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1px;
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+#meterRight {
+    margin-top: 40px;
+}
+#meterLeft {
+    margin-top: 40px;
+}
+#uiGrid2 {
+  display: grid;
+  /* grid-template-columns: repeat(3, 1fr); */
+  grid-gap: 1px;
+}
+
+#Logo {
+    grid-column: 1;
+    grid-row: 1;
+    width: 400px;
+    margin-left: 50px;
+}
+#volume {
+    grid-column: 1;
+    grid-row: 2;
+    margin-left: 40px;
+    margin-right: 20px;
+}
+#buttons {
+    grid-column: 2 ;
+    grid-row: 1 / span 2;
+    text-align: center;
+}
+#buttons button {
+    margin-top: 8px;
+    margin-bottom: 0px;
+}
+#meterSub {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    margin-right: 60px;
+    margin-top: 50px;
 }
 
 input[type=range] {
@@ -283,48 +375,28 @@ input[type=range]:focus::-ms-fill-upper {
   background: #367ebd;
 }
 
-#volume {
-    color: white;
+
+@media screen and (width: 1024px) {
+    #meterRight, #meterLeft,  {
+        transform: scale(1.5);
+    }
+
+    #meterSub {
+        transform: scale(1.2);
+    }
 }
 
-button.round {
-  background-color: #444;
-  color: white;
-  border: none;
-  padding: 5px;
-  font-size: 25px;
-  height: 70px;
-  width: 70px;
-  border-radius: 50%;
-}
-button.round svg {
-    margin-top: 5px;
-    width: 40px;
-}
+@media screen and (max-width: 1023px) {
 
-button.round.active {
-  background-color: #0A699E;
-}
-
-#line2 {
-    width: 100%;
-    margin-top: 50px;
-}
-#buttons {
-    margin-top: 10px;
-    width: 100%;
-}
-#buttons td {
-    text-align: center;
-    padding-top: 10px;
-}
-#dimScreen {
-    display: none;
-    width: 100%;
-    height: 100%;
-    background:rgba(0,0,0,1); 
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 0; /* Just to keep it at the very top */
+        #uiGrid {
+          margin-bottom: 5px;
+          margin-top: 5px;
+        }
+    #meterRight, #meterLeft  {
+        margin-top: 20px;
+        transform: scale(1.2);
+    }
+    #meterSub {
+        transform: scale(1);
+    }
 }
