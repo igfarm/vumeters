@@ -400,3 +400,79 @@ input[type=range]:focus::-ms-fill-upper {
         transform: scale(1);
     }
 }
+
+
+@media (orientation: portrait) {
+
+    #uiGrid, #uiGrid2
+     {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 1px;
+      margin-bottom: 50px;
+      margin-top: 50px;
+    }
+    #meterRight {
+        transform: scale(1.5);
+        grid-row: 1;
+    }
+
+    #meterLeft {
+        transform: scale(1.5);
+        grid-row: 2;
+    }
+    #meterSub {
+        transform: scale(1.5);
+        grid-row: 1;
+    }
+    #uiGrid, #uiGrid2 {
+        margin: 0;
+    }
+    #meterSub, #meterLeft, #meterRight {
+        grid-column: 1;
+        margin: auto;
+        padding: 0;
+        margin-top: 80px;
+        margin-bottom: 60px;;
+    }
+
+    #uiGrid2 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 1px;
+    }
+
+    #Logo {
+        grid-column: 1;
+        grid-row: 2;
+        margin: 0px;
+        width: 100%;
+    }
+    #volume {
+        grid-column: 1;
+        grid-row: 4;
+        margin-left: 50px;
+        margin-right: 50px;
+    
+    }
+    #buttons {
+        grid-column: 1 ;
+        grid-row: 5;
+        text-align: center;
+    }
+    #buttons button {
+        font-size: 80px;
+        width: 150px;
+        height: 150px;
+        margin-left: 40px;
+        margin-right: 40px;
+        margin-top: 100px;
+        margin-bottom: 0px;
+    }
+    #buttons svg {
+        width: 70px;
+    }
+    #buttons > div {
+        display: inline-block;
+    }
+}
