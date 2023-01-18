@@ -3,9 +3,33 @@
     const $this=this;
     
     // options are GetPlaybackSignalPeak and GetPlaybackSignalRms
-    const getPlaybackMetric = "GetPlaybackSignalPeak";
+    const getPlaybackMetric = "GetPlaybackSignalRms";
     
     const levelAsPercent = function(dBFS) {
+    
+        // In my setup, the I measure 85dB at my listening
+        // position when playing -18dB pink noise signal at
+        // a Camilla volume of -7db.
+        //
+        // That means that a -25dB (-7-18=-25) signal equals 85dB
+        // which should match 60% on the graph, where the red bar 
+        // starts. We set 0% in the graph to -80dB.
+        //
+        // Solving then in Wolfram Alpha for "linear (-25, 60) (-80, 0)"
+        // we get the equation below
+        let value = 1.09 * dBFS + 87.27
+        return value < 0 ? 0 : (value > 100 ? 100 : value)
+    }    
+
+    const levelAsPercent2 = function(dBFS) {
+        // https://www.moellerstudios.org/converting-amplitude-representations/
+        let value = Math.pow(10, dBFS/20) * 100
+        return value < 0 ? 0 : (value > 100 ? 100 : value)
+    }    
+
+
+    const levelAsPercent3 = function(dBFS) {
+        // https://github.com/HEnquist/camillagui/blob/063abc1dcfb1386a5c5cccc97781072485b12522/src/sidepanel/vumeter.tsx#L58
         let value = 0;
         if (dBFS >= -12)
             value = 81.25 + 12.5*dBFS/6
@@ -13,13 +37,6 @@
             value = 68.75 + 12.5*dBFS/12
         else
             value = 56.25 + 12.5*dBFS/24
-
-        return value < 0 ? 0 : (value > 100 ? 100 : value)
-    }    
-
-    const levelAsPercent2 = function(dBFS) {
-        // https://www.moellerstudios.org/converting-amplitude-representations/
-        let value = Math.pow(10, dBFS/20) * 100
         return value < 0 ? 0 : (value > 100 ? 100 : value)
     }    
 
