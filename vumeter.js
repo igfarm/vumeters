@@ -27,7 +27,6 @@
         return value < 0 ? 0 : (value > 100 ? 100 : value)
     }    
 
-
     const levelAsPercent3 = function(dBFS) {
         // https://github.com/HEnquist/camillagui/blob/063abc1dcfb1386a5c5cccc97781072485b12522/src/sidepanel/vumeter.tsx#L58
         let value = 0;
@@ -81,22 +80,6 @@
         "subwoofer": false
     }
 
-    const setConfig = function (input, sub) {
-        let file = "/home/ubuntu/camilladsp/configs/"
-
-        if (input == "stream")
-            file += 'usb';
-        else
-            file += 'analog';
-
-        if (!sub)
-            file += '-nosub';
-        
-        file += '.yml';
-
-        socket.send(JSON.stringify({"ReadConfigFile": file }));
-    }
-    
     const setDisplay = function (state) {
         return false;
         
@@ -128,7 +111,7 @@
 
        // Listen for messages
         socket.addEventListener('message', (event) => {
-            //console.log('Message from server ', event.data);
+            console.log('Message from server ', event);
             const data = JSON.parse(event.data)
 
             if (data[getPlaybackMetric]) {
@@ -147,24 +130,20 @@
             else if (data["GetState"]) {
                 camillaState = data["GetState"].value;
             }
-            else if (data["ReadConfigFile"]) {
-                //console.log(data["ReadConfigFile"]);
-                const config = data["ReadConfigFile"].value;
-                socket.send(JSON.stringify({"SetConfig": config}));
-                
+            else if (data["SetConfig"]) {
+                // Config was changes, so we schedule an update in near future
                 setTimeout(function () {
                     socket.send(JSON.stringify("GetConfigJson"));
                 }, 500);
-                
             }
             else if (data["GetConfigJson"]) {
                 const config = JSON.parse(data["GetConfigJson"].value);
 
                 // sub enabled
-                buttonState['subwoofer'] = config.mixers.to3chan.mapping.length == 3;
+                buttonState['subwoofer'] = config.subState;
 
                 // Source
-                if (config.devices.capture.device == "hw:M4") {
+                if (config.inputState == "analog") {
                     buttonState['stream'] = false;
                     buttonState['analog'] = true;
                 } else {
@@ -213,6 +192,7 @@
         if (socket.readyState !== WebSocket.OPEN) {
             camillaState = "Unknown"
             start();
+            return;
         }
         socket.send(JSON.stringify("GetConfigJson"));
     }, 5000)
@@ -242,15 +222,15 @@
 
     // Control buttons
     document.getElementById('stream').addEventListener("click", function () {
-        setConfig('stream', buttonState['subwoofer'])
+        socket.send(JSON.stringify({"SetInput" : "stream"}));
     })
 
     document.getElementById('analog').addEventListener("click", function () {
-        setConfig('analog', buttonState['subwoofer'])
+        socket.send(JSON.stringify({"SetInput" : "analog"}));
     })
 
     document.getElementById('subwoofer').addEventListener("click", function () {
-        setConfig( buttonState['stream'] ? 'stream' : 'analog', !buttonState['subwoofer'])
+        socket.send(JSON.stringify("ToggleSub"));
     })
 
 }());

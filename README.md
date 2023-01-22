@@ -11,8 +11,15 @@ is the subwoofer. Connection to CamillaDSP is via websocket.
 
 1. Copy files to your computer.
 2.  Update the `config.js` file to set the url for camillaDSP websocket.
-3.  Load the `index.html` page in your browser..
- 
+3.  Load the `index.html` page in your browser.
+
+## Display
+
+- Raspberry Pi 4
+- ![1024X600 panel](https://www.amazon.com/dp/B07VNX4ZWY?ref=ppx_yo2ov_dt_b_product_details&th=1)
+- Raspbian OS
+
+## Raspberry pi
 ## Sources
 
 - Stereo VU Meters by Michael Levy at  https://codepen.io/michaelslevy/pen/rRPyaO
